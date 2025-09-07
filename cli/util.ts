@@ -5,7 +5,7 @@ import { arrayifyStream } from 'arrayify-stream'
 import { rdfParser } from 'rdf-parse'
 import { createVocabulary } from 'rdf-vocabulary'
 import { DataFactory } from 'n3'
-import type { Bindings, NamedNode, Literal, Quad } from '@rdfjs/types'
+import type { Term, Bindings, NamedNode, Literal, Quad } from '@rdfjs/types'
 import { QueryEngine } from '@comunica/query-sparql-rdfjs'
 import { Store } from 'n3'
 import { write } from '@jeswr/pretty-turtle'
@@ -25,6 +25,11 @@ export async function loadData(filePath: string): Promise<Store> {
   return new Store(await arrayifyStream(fromStream))
 }
 
+export async function statementExists(dataset: Store, subject?: Term | null, predicate?: Term | null, object?: Term | null): Promise<boolean> {
+  // @ts-expect-error
+  return !!(await arrayifyStream(dataset.match(subject, predicate, object))).length
+}
+
 export async function saveData(dataset: Store, filePath: string): Promise<void> {
   const outString = await write([...dataset], { prefixes, ordered: true })
   fs.writeFileSync(filePath, outString)
@@ -32,7 +37,10 @@ export async function saveData(dataset: Store, filePath: string): Promise<void> 
 
 export const ex = createVocabulary('http://example.org#', 'name', 'description', 'webid', 'siloId', 'member', 'siloUsername', 'Person', 'Organization')
 export const schema = createVocabulary('http://schema.org/', 'name')
+export const rdf = createVocabulary(prefixes.rdf, 'type')
 export const rdfs = createVocabulary('http://www.w3.org/2000/01/rdf-schema#', 'label')
+export const doap = createVocabulary('http://usefulinc.com/ns/doap#', 'Specification')
+export const spec = createVocabulary('http://www.w3.org/ns/spec#', 'Primer')
 
 export function getPath(from: string, to: string): string {
   const __filename = fileURLToPath(from)

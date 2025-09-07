@@ -9,6 +9,7 @@ import { aggregateGithub } from './aggregations/github.ts'
 import { migrateTmpId } from './migrations/tmp-id.ts'
 import { aggregateWikidata } from './aggregations/wikidata.ts'
 import { aggregateMatrix } from './aggregations/matrix.ts'
+import { aggregateSpecificatons } from './aggregations/specifications.ts'
 
 const dataPath = getPath(import.meta.url, '../catalog-data.ttl')
 const dataset = await loadData(dataPath)
@@ -81,6 +82,14 @@ aggregate.command('matrix')
   .action(async () => {
     console.info('Fetching data Matrix')
     const updated = await aggregateMatrix(dataset)
+    await saveData(updated, dataPath)
+  })
+
+aggregate.command('specifications')
+  .description('Adds data from published specifications')
+  .action(async () => {
+    console.info('Fetching data from specifications')
+    const updated = await aggregateSpecificatons(dataset)
     await saveData(updated, dataPath)
   })
 

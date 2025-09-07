@@ -23,8 +23,10 @@
   "license": "MIT",
   "dependencies": {
     "@comunica/query-sparql-rdfjs": "^4.3.0",
+    "@jeswr/rdf-serialize-store": "^1.1.1",
     "commander": "^14.0.0",
     "dotenv": "^17.2.2",
+    "jsonld": "^8.3.3",
     "matrix-js-sdk": "^38.0.0",
     "node-w3capi": "^2.2.0",
     "rdf-dereference-store": "^1.4.0"
@@ -38,6 +40,7 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.3",
     "@semantic-release/release-notes-generator": "^14.0.3",
+    "@types/jsonld": "^1.5.15",
     "@types/n3": "^1.26.0",
     "husky": "^9.0.11",
     "n3": "^1.26.0",
