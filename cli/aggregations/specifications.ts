@@ -1,12 +1,7 @@
 import { Parser, Reasoner, Store } from 'n3'
-import jsonld from 'jsonld'
 import type { NodeObject } from 'jsonld'
 import { dereferenceToStore } from 'rdf-dereference-store'
-import serializeStore from '@jeswr/rdf-serialize-store'
-import { statementExists, queryDatasetConstruct, rdf, doap, spec } from '../util.ts'
-
-// @ts-expect-error
-const serialize = serializeStore.default
+import { statementExists, queryDataset, queryDatasetConstruct, frameDataset, rdf, doap, spec } from '../util.ts'
 
 const baseFrame = {
   "@context": {
@@ -55,6 +50,7 @@ async function fixDescriptionN3(dataset: Store): Promise<Store> {
     =>
     {
       ?document spec:definesConformanceFor ?productClass .
+      ?productClass a spec:ClassOfProduct .
     } .
     {
       ?s skos:prefLabel ?o .
@@ -120,14 +116,16 @@ function cleanupFramed(id: string, object: NodeObject, t?: typeof doap.Specifica
 
 export async function aggregateSpecificatons(dataset: Store): Promise<Store> {
   console.info('aggregating specifications')
-  const specifications = [
-    'https://solidproject.org/TR/wac',
-    'https://solidproject.org/TR/protocol',
-    'http://0.0.0.0:8000/specification/',
-    'http://0.0.0.0:8000/primer/application.html',
-    'http://0.0.0.0:8000/primer/authorization-agent.html'
-  ]
-  for (const url of specifications) {
+  const query = `
+    SELECT ?s
+    WHERE {
+      { ?s a <${doap.Specification}> }
+      UNION
+      { ?s a <${spec.Primer}> }
+    }
+  `
+  const drafts = (await queryDataset(dataset, query)).map(bindings => bindings.get('s')!.value)
+  for (const url of drafts) {
     try {
       const { store } = await dereferenceToStore(url)
       let t: undefined | typeof doap.Specification | typeof spec.Primer
@@ -141,11 +139,10 @@ export async function aggregateSpecificatons(dataset: Store): Promise<Store> {
         frame = primerFrame
       }
       const fixed = await fixDescriptionN3(store)
-      const raw = await serialize(fixed, { contentType: 'application/n-quads' })
-      const doc = await jsonld.fromRDF(raw)
-      const framed = await jsonld.frame(doc, frame)
-      const result = cleanupFramed(url, framed, t)
-      console.log(result)
+      // const result = cleanupFramed(url, framed, t)
+      const result = await frameDataset(fixed, frame)
+      // TODO: delete old description - named graph
+      dataset.addAll(result)
     } catch (err) {
       console.error(err)
       console.error(`Processing failed: ${url}`)

@@ -1,8 +1,12 @@
 @prefix con: <https://solidproject.solidcommunity.net/catalog/taxonomy#> .
+@prefix doap: <http://usefulinc.com/ns/doap#> .
 @prefix ex: <http://example.org#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <http://schema.org/> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix spec: <http://www.w3.org/ns/spec#> .
 @prefix wd: <http://www.wikidata.org/entity/> .
 @prefix wdt: <http://www.wikidata.org/prop/direct/> .
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
@@ -430,6 +434,18 @@ wd:Q978185 ex:name "TypeScript" ;
   ex:name "Pierre-Antoine Champin" ;
   ex:webid <https://solid.champin.net/pa/profile/card#me> .
 
+<https://solid.github.io/data-interoperability-panel/primer/application.html> a spec:Primer ;
+  schema:author <https://elf-pavlik.hackers4peace.net> ;
+  schema:editor <https://elf-pavlik.hackers4peace.net> ;
+  schema:name "SAI Application Primer" .
+
+<https://solid.github.io/data-interoperability-panel/primer/authorization-agent.html> a spec:Primer ;
+  schema:author <https://elf-pavlik.hackers4peace.net> ;
+  schema:editor <https://elf-pavlik.hackers4peace.net> ;
+  schema:name "SAI Authorization Agent Primer" .
+
+<https://solid.github.io/data-interoperability-panel/specification/> a spec:Specification .
+
 <https://solid.smessie.com/profile/card#me> a ex:Person ;
   ex:name "Ieben Smessaert" ;
   ex:webid <https://solid.smessie.com/profile/card#me> .
@@ -480,30 +496,9 @@ wd:Q978185 ex:name "TypeScript" ;
 <https://solidproject.org/TR/oidc#Provider> a ex:ClassOfProduct ;
   ex:name "Solid-OIDC Provider" .
 
-<https://solidproject.org/TR/protocol> a ex:Specification ;
-  ex:definesConformanceFor <https://solidproject.org/TR/protocol#Client>, <https://solidproject.org/TR/protocol#Server> ;
-  ex:landingPage <https://solidproject.org/TR/protocol> ;
-  ex:name "Solid Protocol" ;
-  ex:repository <https://github.com/solid/specification> .
+<https://solidproject.org/TR/protocol> a doap:Specification .
 
-<https://solidproject.org/TR/protocol#Client> a ex:ClassOfProduct ;
-  ex:name "Solid Client" .
-
-<https://solidproject.org/TR/protocol#Server> a ex:ClassOfProduct ;
-  ex:name "Solid Server" .
-
-<https://solidproject.org/TR/wac> a ex:Specification ;
-  ex:author <https://csarven.ca/#i>, <https://timbl.solidcommunity.net/profile/card#me>, <urn:uuid:ee113565-7724-4804-8867-c1da49d103ce> ;
-  ex:editor <https://csarven.ca/#i> ;
-  ex:landingPage <https://solidproject.org/TR/wac> ;
-  ex:name "Web Access Control" ;
-  ex:repository <https://github.com/solid/web-access-control-spec/> .
-
-<https://solidproject.org/TR/wac#Client> a ex:ClassOfProduct ;
-  ex:name "WAC Client" .
-
-<https://solidproject.org/TR/wac#Server> a ex:ClassOfProduct ;
-  ex:name "WAC Server" .
+<https://solidproject.org/TR/wac> a doap:Specification .
 
 <https://solidweb.me/testpro-dev/profile/card#me> a ex:Person ;
   ex:contactEmail <mailto:me@evering.eu> ;
@@ -3790,9 +3785,9 @@ wd:Q978185 ex:name "TypeScript" ;
   ex:name "Philipp Gfeller" .
 
 <urn:uuid:f9e24b36-52d5-4732-ad7d-206b6340981d> a ex:Ontology ;
-  ex:landingPage <http://www.w3.org/2004/02/skos/core#> ;
+  ex:landingPage skos: ;
   ex:name "Simple Knowledge Organization System" ;
-  ex:namespaceURI <http://www.w3.org/2004/02/skos/core#> ;
+  ex:namespaceURI skos: ;
   ex:prefix "skos:" .
 
 <urn:uuid:fa319e19-e0af-4f22-acce-875d0fe39547> a ex:Ontology ;

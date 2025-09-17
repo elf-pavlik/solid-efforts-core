@@ -9,19 +9,31 @@ import type { Term, Bindings, NamedNode, Literal, Quad } from '@rdfjs/types'
 import { QueryEngine } from '@comunica/query-sparql-rdfjs'
 import { Store } from 'n3'
 import { write } from '@jeswr/pretty-turtle'
+import jsonld from 'jsonld'
+import type { JsonLdObj } from 'jsonld/jsonld-spec'
+import serializeStore from '@jeswr/rdf-serialize-store'
+import streamifyStream from 'streamify-string'
+
+// @ts-expect-error
+const serialize = serializeStore.default
 
 export const prefixes = {
   rdf: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+  rdfs: 'http://www.w3.org/2000/01/rdf-schema#',
   xsd: 'http://www.w3.org/2001/XMLSchema#',
   wd: 'http://www.wikidata.org/entity/',
   wdt: 'http://www.wikidata.org/prop/direct/',
   con: 'https://solidproject.solidcommunity.net/catalog/taxonomy#',
+  spec: 'http://www.w3.org/ns/spec#',
+  schema: 'http://schema.org/',
+  skos: 'http://www.w3.org/2004/02/skos/core#',
+  doap: 'http://usefulinc.com/ns/doap#',
   cdata: 'https://solidproject.solidcommunity.net/catalog/data#',
   ex: 'http://example.org#',
 }
 
 export async function loadData(filePath: string): Promise<Store> {
-  const fromStream = await readQuadStream(filePath)
+  const fromStream = readQuadStream(filePath)
   return new Store(await arrayifyStream(fromStream))
 }
 
@@ -35,12 +47,12 @@ export async function saveData(dataset: Store, filePath: string): Promise<void> 
   fs.writeFileSync(filePath, outString)
 }
 
-export const ex = createVocabulary('http://example.org#', 'name', 'description', 'webid', 'siloId', 'member', 'siloUsername', 'Person', 'Organization')
-export const schema = createVocabulary('http://schema.org/', 'name')
+export const ex = createVocabulary(prefixes.ex, 'name', 'description', 'webid', 'siloId', 'member', 'siloUsername', 'Person', 'Organization')
+export const schema = createVocabulary(prefixes.schema, 'name')
 export const rdf = createVocabulary(prefixes.rdf, 'type')
-export const rdfs = createVocabulary('http://www.w3.org/2000/01/rdf-schema#', 'label')
-export const doap = createVocabulary('http://usefulinc.com/ns/doap#', 'Specification')
-export const spec = createVocabulary('http://www.w3.org/ns/spec#', 'Primer')
+export const rdfs = createVocabulary(prefixes.rdfs, 'label')
+export const doap = createVocabulary(prefixes.doap, 'Specification')
+export const spec = createVocabulary(prefixes.spec, 'ClassOfProduct', 'Primer')
 
 export function getPath(from: string, to: string): string {
   const __filename = fileURLToPath(from)
@@ -48,7 +60,7 @@ export function getPath(from: string, to: string): string {
   return join(__dirname, to)
 }
 
-export async function readQuadStream(filePath: string, contentType = 'text/turtle') {
+export function readQuadStream(filePath: string, contentType = 'text/turtle') {
   const textStream = fs.createReadStream(filePath, { encoding: 'utf8' })
   return rdfParser.parse(textStream, {
     contentType,
@@ -77,6 +89,18 @@ export async function queryDatasetConstruct(dataset: Store, query: string,): Pro
     sources: [dataset],
   })
   return arrayifyStream<Quad>(quadsStream)
+}
+
+export async function frameDataset(dataset: Store, frame: JsonLdObj,): Promise<Store> {
+  const contentType = 'application/n-quads'
+  const raw = await serialize(dataset, { contentType })
+  const doc = await jsonld.fromRDF(raw)
+  const framed = await jsonld.frame(doc, frame)
+  const nquads = await jsonld.toRDF(framed, { format: contentType })
+  const quadStream = rdfParser.parse(streamifyStream(nquads as string), {
+    contentType,
+  })
+  return new Store(await arrayifyStream(quadStream))
 }
 
 export type Entity = { id: NamedNode, value: string }
