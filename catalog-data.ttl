@@ -1954,6 +1954,12 @@ wd:Q978185 ex:name "TypeScript" ;
 <urn:uuid:66b87ae7-c851-4b3e-9f55-86f89ae8a30b> a ex:Person ;
   ex:name "Syed Ali Raza Zaidi" .
 
+<urn:uuid:66baba83-0e5a-482f-8c8b-ec9e14882921> a ex:Organization ;
+  ex:landingPage <https://www.w3.org/groups/wg/did/> ;
+  ex:name "W3C Decentralized Identifier Working Group" ;
+  ex:siloId "w3c:117488" ;
+  ex:subType con:OpenSourceProject .
+
 <urn:uuid:66bd0088-03b1-47ae-a85b-cc2168bd0198> a ex:Person ;
   ex:name "Dmitri Zagidulin" .
 
@@ -2371,6 +2377,12 @@ wd:Q978185 ex:name "TypeScript" ;
 
 <urn:uuid:8c4b61f9-f6aa-4a1e-9ca6-d60a4672fc5e> a ex:Person ;
   ex:name "Arne Hassel" .
+
+<urn:uuid:8c5abb11-6d68-465c-bf31-e56a51c55ff7> a ex:Organization ;
+  ex:landingPage <https://www.w3.org/groups/wg/social/> ;
+  ex:name "W3C Social Web Working Group" ;
+  ex:siloId "w3c:72531" ;
+  ex:subType con:OpenSourceProject .
 
 <urn:uuid:8ca2b0f9-0d1c-44d6-9f3c-196b567a0187> a ex:Person ;
   ex:name "Peter Bruhn Andersen" .
